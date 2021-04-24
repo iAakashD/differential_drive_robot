@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<robot name="diffdrive" xmlns:xacro="https://www.ros.org/wiki/xacro" >
+
+    <!-- Include files -->
+    <xacro:include filename="$(find diffdrive_description)/urdf/include/config.xacro"/>
+    <xacro:include filename="$(find diffdrive_description)/urdf/include/links_joints.xacro"/>
+
+    <!-- Links and Joints-->
+    <link name="base_link"/>
+    <xacro:macro_body name="body" parent="base_link"/>
+    <xacro:macro_wheels name="wheel_left" reflect="-1" parent="body"/>
+    <xacro:macro_wheels name="wheel_right" reflect="1" parent="body"/>
+    <xacro:macro_castors name="castor_front" reflect="1" parent="body"/>
+    <xacro:macro_castors name="castor_rear" reflect="-1" parent="body"/>
+
+    <!-- Gazebo plugin -->
+    <xacro:include filename="$(find diffdrive_description)/urdf/include/gazebo.xacro"/>
+
+</robot>

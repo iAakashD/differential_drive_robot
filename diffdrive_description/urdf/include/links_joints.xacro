@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="https://www.ros.org/wiki/xacro" >
+
+    <!-- Include files -->
+    <xacro:include filename="$(find diffdrive_description)/urdf/include/inertia.xacro"/>
+
+    <!-- RViz Materials -->
+    <material name="red">
+        <color rgba="1 0 0 ${opacity}"/>
+    </material>
+
+    <material name="green">
+        <color rgba="0 1 0 ${opacity}"/>
+    </material>
+
+    <material name="blue">
+        <color rgba="0 0 1 ${opacity}"/>
+    </material>
+
+    <!-- Links and Joints -->
+    <!-- Body -->
+    <xacro:macro name="macro_body" params="name parent">
+        <link name="${name}">
+        
+        <xacro:macro_cuboid_inertia mass="2" length="${robot_length}" width="${track_width}" depth="${track_width}"/>
+            
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${track_width - wheel_width - 2*0.03} ${robot_length} ${robot_height}"/>
+                </geometry>
+                <material name="red"/>
+            </visual>
+
+            <!--<collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="${track_width - wheel_width - 2*0.03} ${robot_length} ${robot_height}"/>
+                </geometry>
+            </collision>-->
+        </link>
+
+        <gazebo reference="${name}">
+            <material>Gazebo/Red</material>
+        </gazebo>
+
+        <joint name="joint-${parent}-${name}" type="fixed">
+            <parent link="${parent}"/>
+            <origin xyz="0 0 ${robot_height/2 + ground_clearance}"/>
+            <child link="${name}"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Wheels -->
+    <xacro:macro name="macro_wheels" params="name reflect parent">
+        <link name="${name}">
+            <xacro:macro_cylinder_inertia mass="0.2" radius="${radius_wheel}" height="${wheel_width}"/>
+
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <cylinder length="${wheel_width}" radius="${radius_wheel}"/>
+                </geometry>
+                <material name="green"/>
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <cylinder length="${wheel_width}" radius="${radius_wheel}"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <gazebo reference="${name}">
+            <material>Gazebo/Green</material>
+        </gazebo>
+
+        <joint name="joint-${parent}-${name}" type="continuous">
+            <parent link="${parent}"/>
+            <origin xyz="${reflect*(track_width/2 - wheel_width/2)} 0 ${radius_wheel - ground_clearance - robot_height/2}" rpy="0 ${-PI/2} 0"/>
+            <child link="${name}"/>
+            <axis xyz="0 0 1"/>
+
+            <limit effort="10000" velocity="1000"/> 
+            <joint_properties damping="1.0" friction="1.0"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Castors -->
+    <xacro:macro name="macro_castors" params="name reflect parent">
+        <link name="${name}">
+            <xacro:macro_sphere_inertia mass="0.2" radius="${radius_wheel/2}"/>
+
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <sphere radius="${radius_wheel/2}"/>
+                </geometry>
+                <material name="blue"/>
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <sphere radius="${radius_wheel/2}"/>
+                </geometry>
+            </collision>
+        </link>
+
+        <gazebo reference="${name}">
+            <material>Gazebo/Blue</material>
+        </gazebo>
+
+        <joint name="joint-${parent}-${name}" type="fixed">
+            <parent link="${parent}"/>
+            <origin xyz="0 ${reflect*(robot_length/2 - radius_wheel/2)} ${radius_wheel/2 - ground_clearance - robot_height/2}" rpy="0 ${-PI/2} 0"/>
+            <child link="${name}"/>>
+        </joint>
+    </xacro:macro>
+
+</robot>

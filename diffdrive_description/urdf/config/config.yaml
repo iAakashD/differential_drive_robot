@@ -1,0 +1,9 @@
+robot_height: 0.15
+robot_length: 0.5
+track_width: 0.4
+
+radius_wheel: 0.1
+wheel_width: 0.03
+ground_clearance: 0.05
+
+opacity: 0.95

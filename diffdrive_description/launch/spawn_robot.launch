@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!--load robot model in robot_description parameter-->
+  <arg name="model" default="$(find diffdrive_description)/urdf/diffdrive_robot.urdf.xacro"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+
+  <!--run joint state publisher node (not required to run if using plugin, as it will publish joint states)--> 
+  <!--<arg name="gui" default="false"/>
+  <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+  <node unless="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />-->
+
+  <!--run robot state publisher node-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <!--Show in Rviz-->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find diffdrive_description)/rviz/config.rviz" required="true"/>
+
+  <!-- Spawn gazebo empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="worlds/empty_world.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="recording" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- Spawn the robot into Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+      args="-urdf -model ackermann_robot -param robot_description"/>
+
+</launch>

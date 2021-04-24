@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="https://www.ros.org/wiki/xacro" >
+
+    <!-- Properties from config.yaml file -->
+    <xacro:property name="yaml_file" value="$(find diffdrive_description)/urdf/config/config.yaml" />
+    <xacro:property name="props" value="${load_yaml(yaml_file)}"/>
+    
+    <xacro:property name="robot_height" value="${props['robot_height']}" />
+    <xacro:property name="robot_length" value="${props['robot_length']}" />
+    <xacro:property name="track_width" value="${props['track_width']}" />
+    
+    <xacro:property name="radius_wheel" value="${props['radius_wheel']}" />
+    <xacro:property name="wheel_width" value="${props['wheel_width']}" />
+    <xacro:property name="ground_clearance" value="${props['ground_clearance']}"/>
+    
+    <xacro:property name="opacity" value="${props['opacity']}"/>
+
+
+    <!-- Other Properties -->
+    <xacro:property name="PI" value="3.14159265"/>
+
+</robot>
